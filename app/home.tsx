@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 
 export default function HomeScreen() {
+
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.headerWrap}>
         <Text style={styles.appName}>Basic Auth</Text>
         <Text style={styles.header}>Hi, John 👋</Text>
@@ -15,14 +16,14 @@ export default function HomeScreen() {
           <Text style={styles.cardSub}>View your details</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.card} onPress={() => alert('Settings')}>
-          <Text style={styles.cardTitle}>Settings</Text>
-          <Text style={styles.cardSub}>App preferences</Text>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/weather')}>
+          <Text style={styles.cardTitle}>🌤️ Weather</Text>
+          <Text style={styles.cardSub}>Check weather info</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.card} onPress={() => alert('About')}>
-          <Text style={styles.cardTitle}>About</Text>
-          <Text style={styles.cardSub}>Learn more</Text>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/quotes')}>
+          <Text style={styles.cardTitle}>💡 Quotes</Text>
+          <Text style={styles.cardSub}>Daily inspirations</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.card} onPress={() => router.replace('/login')}>
@@ -30,12 +31,12 @@ export default function HomeScreen() {
           <Text style={styles.cardSub}>Sign out</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#f7f9fc' },
+  container: { padding: 20, backgroundColor: '#f7f9fc' },
   headerWrap: { marginTop: 10, marginBottom: 24 },
   appName: { fontSize: 16, color: '#6b7280' },
   header: { fontSize: 26, fontWeight: '700', marginTop: 6 },

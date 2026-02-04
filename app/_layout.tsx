@@ -8,6 +8,8 @@ export default function Layout() {
       <Stack.Screen name="register" />
       <Stack.Screen name="home" />
       <Stack.Screen name="profile" />
+      <Stack.Screen name="weather" />
+      <Stack.Screen name="quotes" />
     </Stack>
   );
 }
