@@ -1,4 +1,11 @@
-import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { useState } from 'react';
 import AppInput from '../components/AppInput';
 import AppButton from '../components/AppButton';
@@ -17,24 +24,35 @@ export default function LoginScreen() {
         <Text style={styles.title}>Welcome Back</Text>
         <Text style={styles.subtitle}>Sign in to continue</Text>
 
+        {/* Email / Mobile */}
         <AppInput
           placeholder="Email / Mobile"
           value={user}
           onChangeText={setUser}
+          keyboardType="email-address"
+          autoComplete="off"
+          textContentType="none"
+          autoCapitalize="none"
         />
 
+        {/* Password */}
         <AppInput
           placeholder="Password"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
+          autoComplete="password"
+          textContentType="password"
         />
 
         <TouchableOpacity>
           <Text style={styles.forgot}>Forgot Password?</Text>
         </TouchableOpacity>
 
-        <AppButton title="Login" onPress={() => router.replace('/home')} />
+        <AppButton
+          title="Login"
+          onPress={() => router.replace('/home')}
+        />
 
         <TouchableOpacity onPress={() => router.push('/register')}>
           <Text style={styles.link}>New user? Register</Text>
@@ -45,7 +63,13 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20, backgroundColor: '#f7f9fc' },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#f7f9fc',
+  },
+
   card: {
     backgroundColor: '#fff',
     padding: 20,
@@ -55,8 +79,29 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 3,
   },
-  title: { fontSize: 26, fontWeight: '700', textAlign: 'center' },
-  subtitle: { textAlign: 'center', color: '#6b7280', marginBottom: 24, marginTop: 6 },
-  forgot: { textAlign: 'right', color: '#4e8cff', marginBottom: 20 },
-  link: { textAlign: 'center', color: '#4e8cff', marginTop: 15 },
+
+  title: {
+    fontSize: 26,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+
+  subtitle: {
+    textAlign: 'center',
+    color: '#6b7280',
+    marginBottom: 24,
+    marginTop: 6,
+  },
+
+  forgot: {
+    textAlign: 'right',
+    color: '#4e8cff',
+    marginBottom: 20,
+  },
+
+  link: {
+    textAlign: 'center',
+    color: '#4e8cff',
+    marginTop: 15,
+  },
 });

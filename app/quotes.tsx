@@ -1,6 +1,13 @@
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
+import {
+  requestNotificationPermissions,
+  scheduleDailyMotivationNotification,
+  scheduleWeeklyRandomNotification,
+  sendFavoriteSavedNotification,
+  checkAndSendMilestoneNotification,
+} from '../services/notificationService';
 
 type Quote = {
   id: number;
@@ -32,6 +39,7 @@ export default function QuotesScreen() {
   const [favorites, setFavorites] = useState<Quote[]>([]);
   const [isFaved, setIsFaved] = useState<boolean>(false);
   const [showFavorites, setShowFavorites] = useState<boolean>(false);
+  const [notificationPermission, setNotificationPermission] = useState<boolean>(true);
 
   const loadQuote = useCallback(async () => {
     try {
@@ -66,21 +74,58 @@ export default function QuotesScreen() {
     setLikes(likes + 1);
   };
 
-  const handleFavorite = () => {
+  const handleFavorite = async () => {
     if (quote) {
       if (isFaved) {
         setFavorites(favorites.filter(fav => fav.id !== quote.id));
         setIsFaved(false);
       } else {
-        setFavorites([...favorites, quote]);
+        const updatedFavorites = [...favorites, quote];
+        setFavorites(updatedFavorites);
         setIsFaved(true);
+
+        // Send notification when quote is saved
+        sendFavoriteSavedNotification(quote.content, quote.author);
+
+        // Check for milestone after adding favorite
+        await checkAndSendMilestoneNotification(updatedFavorites.length);
+
+        // Schedule weekly notification when favorites exist
+        if (updatedFavorites.length === 1) {
+          scheduleWeeklyRandomNotification(updatedFavorites);
+        }
       }
     }
   };
 
   useEffect(() => {
+    // Request notification permissions and setup notifications on app startup
+    const initializeNotifications = async () => {
+      const permitted = await requestNotificationPermissions();
+      setNotificationPermission(permitted);
+      if (permitted) {
+        // Schedule daily motivation notification at 7 AM
+        await scheduleDailyMotivationNotification();
+        console.log('Notifications initialized');
+      } else {
+        console.log('Notification permissions denied');
+      }
+    };
+    
+    initializeNotifications();
     loadQuote();
   }, [loadQuote]);
+
+  const handleEnableNotifications = async () => {
+    const permitted = await requestNotificationPermissions();
+    setNotificationPermission(permitted);
+    if (permitted) {
+      await scheduleDailyMotivationNotification();
+      alert('✅ Notifications enabled! You will now receive daily quotes and milestone alerts.');
+    } else {
+      alert('❌ Notification permission denied. Please enable it in your browser settings.');
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -98,6 +143,14 @@ export default function QuotesScreen() {
           </TouchableOpacity>
         </View>
       </View>
+
+      {!notificationPermission && (
+        <TouchableOpacity style={styles.notificationBanner} onPress={handleEnableNotifications}>
+          <Text style={styles.notificationBannerText}>
+            🔔 Enable notifications to receive daily quotes & milestones! Tap here
+          </Text>
+        </TouchableOpacity>
+      )}
 
       {loading ? (
         <View style={styles.centerContent}>
@@ -272,4 +325,19 @@ const styles = StyleSheet.create({
   },
   tagText: { color: '#4e8cff', fontSize: 12, fontWeight: '600' },
   noTagsText: { color: '#9ca3af', fontSize: 14 },
+  notificationBanner: {
+    backgroundColor: '#fef3c7',
+    padding: 12,
+    marginHorizontal: 16,
+    marginTop: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#fbbf24',
+  },
+  notificationBannerText: {
+    color: '#92400e',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
 });

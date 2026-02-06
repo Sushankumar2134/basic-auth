@@ -7,13 +7,19 @@ export default function HomeScreen() {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.headerWrap}>
         <Text style={styles.appName}>Basic Auth</Text>
-        <Text style={styles.header}>Hi, John 👋</Text>
+        <Text style={styles.header}>Hi, jhon 👋</Text>
       </View>
 
       <View style={styles.grid}>
+       
         <TouchableOpacity style={styles.card} onPress={() => router.push('/profile')}>
-          <Text style={styles.cardTitle}>Profile</Text>
+           <Text style={styles.cardTitle}>Profile</Text>
           <Text style={styles.cardSub}>View your details</Text>
+        </TouchableOpacity>
+
+         <TouchableOpacity style={styles.card} onPress={() => router.push('/example')}>
+           <Text style={styles.cardTitle}>Menu</Text>
+          <Text style={styles.cardSub}>View menu options</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.card} onPress={() => router.push('/weather')}>
